@@ -1,32 +1,27 @@
-import React, { useContext } from 'react'
-import { Grid, Sticky } from 'semantic-ui-react'
-import ActivityDetails from '../details/ActivityDetails';
-import ActivityForm from '../form/ActivityForm';
+import { Grid } from 'semantic-ui-react'
 import ActivityList from './ActivityList';
-import ActivityStore from "../../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
+import { useContext, useEffect } from 'react';
+import ActivityStore from '../../../app/stores/activityStore'
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
 const ActivityDashboard: React.FC = () => {
-  const activityStore = useContext(ActivityStore);
-  const{editMode, selectedActivity} = activityStore;
+    const activityStore = useContext(ActivityStore);
+
+    useEffect(() => {
+      activityStore.loadActivities();
+    }, [activityStore]); //empty array makes useEffect hook to run only once, without it, endless loop fetching activities will persist |OR| dependency array, inject the dependency - in this case mobx activity store
+
+    if (activityStore.loadingInitial)
+      return <LoadingComponent content='Loading activities' />;
   return (
     <Grid>
       <Grid.Column width={10}>
-        <ActivityList/>
+        <ActivityList />
       </Grid.Column>
       <Grid.Column width={6}>
-        <Sticky>
-          {selectedActivity && !editMode && (
-            <ActivityDetails/>
-          )}
-          {editMode && (
-            <ActivityForm
-              key={(selectedActivity && selectedActivity.id) || 0}
-              activity={selectedActivity!}
-            />
-          )}
-        </Sticky>
+        <h2>Activity filters</h2>
       </Grid.Column>
     </Grid>
   );
