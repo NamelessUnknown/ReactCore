@@ -16,12 +16,16 @@ const SelectInput: React.FC<IProps> = ({
   return (
     <Form.Field error={touched && !!error} width={width}>
       <Select
-      value={input.value}
-      onChange ={(e, data) => input.onChange(data.value)}
-      placeholder={placeholder}
-      options={options}
+        value={input.value}
+        onChange={(e, data) => input.onChange(data.value)}
+        placeholder={placeholder}
+        options={options}
       />
-      {touched && error && <Label basic color='red'></Label>}
+      {touched && error && (
+        <Label basic color='red'>
+          {error}
+        </Label>
+      )}
     </Form.Field>
   );
 };
